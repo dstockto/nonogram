@@ -10,6 +10,44 @@ class FitFinder
     {
         $this->validateLine($line, $clue);
 
+        // if line is unsolved
+        if ($line == array_fill(0, count($line), self::UNKNOWN)) {
+            return $this->solveUnsolved($line, $clue);
+        }
+
+        return $this->solvePartial($line, $clue);
+    }
+
+    public function validateLine(array $line, array $clue)
+    {
+        // Detect clue that is too long for line
+        $clueLength = $this->getClueLength($clue);
+        if ($clueLength > count($line)) {
+            throw new InvalidArgumentException('Clue has too much to fit in line');
+        }
+
+        // Detect clue with a 0 that's not by itself
+        if (count($clue) > 1 && array_search(0, $clue) !== false) {
+            throw new InvalidArgumentException('Clue contains embedded zero');
+        }
+    }
+
+    /**
+     * @param array $clue
+     * @return number
+     */
+    public function getClueLength(array $clue)
+    {
+        return array_sum($clue) + (count($clue) - 1);
+    }
+
+    /**
+     * @param array $line
+     * @param array $clue
+     * @return array
+     */
+    public function solveUnsolved(array $line, array $clue)
+    {
         // If the clue is [0] then all values are X
         if ($clue == [0]) {
             return array_fill(0, count($line), self::EMPTY);
@@ -61,29 +99,21 @@ class FitFinder
             return str_split($newline);
         }
 
-        return array_fill(0, count($line), self::UNKNOWN);
+        return $line;
     }
 
-    public function validateLine(array $line, array $clue)
+    private function solvePartial($line, $clue)
     {
-        // Detect clue that is too long for line
-        $clueLength = $this->getClueLength($clue);
-        if ($clueLength > count($line)) {
-            throw new InvalidArgumentException('Clue has too much to fit in line');
-        }
+        $this->validateImpossible($line, $clue);
 
-        // Detect clue with a 0 that's not by itself
-        if (count($clue) > 1 && array_search(0, $clue) !== false) {
-            throw new InvalidArgumentException('Clue contains embedded zero');
-        }
+        return $line;
     }
 
-    /**
-     * @param array $clue
-     * @return number
-     */
-    public function getClueLength(array $clue)
+    private function validateImpossible($line, $clue)
     {
-        return array_sum($clue) + (count($clue) - 1);
+        // check if pattern cannot match because matched pattern too big
+
+        // check if pattern cannot match because too many "clues" already matched
+
     }
 }

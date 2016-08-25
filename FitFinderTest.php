@@ -27,12 +27,12 @@ class FitFinderTest extends PHPUnit_Framework_TestCase
     public function lineProvider()
     {
         return [
+            // Puzzles that don't need any information
             '1 blank' => [
                 $this->getBlankLine(1), [0], [FitFinder::EMPTY],
             ],
             '15 blank' => [
                 $this->getBlankLine(15), [0], array_fill(0, 15, FitFinder::EMPTY),
-
             ],
            '1 filled' => [
                 $this->getBlankLine(1), [1], [FitFinder::FILLED],
@@ -88,6 +88,13 @@ class FitFinderTest extends PHPUnit_Framework_TestCase
             '1 5 1 in 10' => [
                 $this->getBlankLine(10), [1, 5, 1], $this->getLineFromString('???####???'),
             ],
+            // Puzzles that have some parts solved
+//            'PS 1 1 in 3' => [
+//                $this->getLineFromString('??#'), [1, 1], $this->getLineFromString('#X#'),
+//            ],
+//            'PS 2 in 3' => [
+//                $this->getLineFromString('X#?'), [2], $this->getLineFromString('X##'),
+//            ],
         ];
     }
 
@@ -119,6 +126,10 @@ class FitFinderTest extends PHPUnit_Framework_TestCase
             'tooLong' => [$this->getBlankLine(1), [2]],
             'zeroWithNumber' => [$this->getBlankLine(15), [0, 1]],
             'bigTooLong' => [$this->getBlankLine(10), [3, 3, 3]],
+            'overfilled 3 in 1' => [$this->getLineFromString('###'), [1]],
+            'overfilled 2 in 1' => [$this->getLineFromString('##?'), [1]],
+            'blocked 2 in 3' => [$this->getLineFromString('XX#'), [2]],
+            'too much matched in 3 for 2' => [$this->getLineFromString('#X#X#'), [1, 1]],
         ];
     }
 
