@@ -81,7 +81,13 @@ class FitFinderTest extends PHPUnit_Framework_TestCase
             ],
             '1 6 in 10' => [
                 $this->getBlankLine(10), [1, 6], $this->getLineFromString('????####??')
-            ]
+            ],
+            '1 6 1 in 10' => [
+                $this->getBlankLine(10), [1, 6, 1], $this->getLineFromString('#X######X#'),
+            ],
+            '1 5 1 in 10' => [
+                $this->getBlankLine(10), [1, 5, 1], $this->getLineFromString('???####???'),
+            ],
         ];
     }
 
