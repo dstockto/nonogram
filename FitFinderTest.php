@@ -1,0 +1,123 @@
+<?php
+require_once __DIR__ . '/FitFinder.php';
+
+class FitFinderTest extends PHPUnit_Framework_TestCase
+{
+    /** @var FitFinder */
+    private $fitFinder;
+
+    public function setUp()
+    {
+        $this->fitFinder = new FitFinder();
+    }
+
+    /**
+     * @param $line
+     * @param $clue
+     * @param $expectedLine
+     * @test
+     * @dataProvider lineProvider
+     */
+    public function it_will_find_the_best_fit($line, $clue, $expectedLine)
+    {
+        $this->assertEquals($expectedLine, $this->fitFinder->findBestFit($line, $clue));
+    }
+
+
+    public function lineProvider()
+    {
+        return [
+            '1 blank' => [
+                $this->getBlankLine(1), [0], [FitFinder::EMPTY],
+            ],
+            '15 blank' => [
+                $this->getBlankLine(15), [0], array_fill(0, 15, FitFinder::EMPTY),
+
+            ],
+           '1 filled' => [
+                $this->getBlankLine(1), [1], [FitFinder::FILLED],
+            ],
+            '15 filled' => [
+                $this->getBlankLine(15), [15], array_fill(0, 15, FitFinder::FILLED)
+            ],
+            '14 clue for 15 line' => [
+                $this->getBlankLine(15), [14], array_merge([FitFinder::UNKNOWN], array_fill(1, 13, FitFinder::FILLED), [FitFinder::UNKNOWN]),
+            ],
+            '1 clue for 3 line' => [
+                $this->getBlankLine(3), [1], $this->getLineFromString('???'),
+            ],
+            '2 clue for 3 line' => [
+                $this->getBlankLine(3), [2], $this->getLineFromString('?#?'),
+            ],
+            '3 clue for 3 line' => [
+                $this->getBlankLine(3), [3], $this->getLineFromString('###'),
+            ],
+            '1 1 for 3' => [
+                $this->getBlankLine(3), [1, 1], $this->getLineFromString('#X#'),
+            ],
+            '1 1 1 for 5' => [
+                $this->getBlankLine(5), [1, 1, 1], $this->getLineFromString('#X#X#'),
+            ],
+            '3 1 for 5' => [
+                $this->getBlankLine(5), [3, 1], $this->getLineFromString('###X#'),
+            ],
+            ' 2 2 for 5' => [
+                $this->getBlankLine(5), [2, 2], $this->getLineFromString('##X##'),
+            ],
+            '3 for 5' => [
+                $this->getBlankLine(5), [3], $this->getLineFromString('??#??'),
+            ],
+            '4 4 for 10' => [
+                $this->getBlankLine(10), [4, 4], $this->getLineFromString('?###??###?'),
+            ],
+            '3 4 for 10' => [
+                $this->getBlankLine(10), [3, 4], $this->getLineFromString('??#???##??'),
+            ],
+            '4 3 for 10' => [
+                $this->getBlankLine(10), [4, 3], $this->getLineFromString('??##???#??'),
+            ],
+            '6 in 10' => [
+                $this->getBlankLine(10), [6], $this->getLineFromString('????##????')
+            ],
+            '1 6 in 10' => [
+                $this->getBlankLine(10), [1, 6], $this->getLineFromString('????####??')
+            ]
+        ];
+    }
+
+    protected function getBlankLine($size)
+    {
+        return array_fill(0, $size, FitFinder::UNKNOWN);
+    }
+
+    /**
+     * @param $badLine
+     * @param $badClue
+     * @dataProvider invalidLineProvider
+     * @test
+     */
+    public function it_will_throw_an_exception_for_a_bad_line($badLine, $badClue)
+    {
+        try {
+            $this->fitFinder->findBestFit($badLine, $badClue);
+        } catch (InvalidArgumentException $e) {
+            return;
+        }
+
+        $this->fail('Invalid line/clue not detected');
+    }
+
+    public function invalidLineProvider()
+    {
+        return [
+            'tooLong' => [$this->getBlankLine(1), [2]],
+            'zeroWithNumber' => [$this->getBlankLine(15), [0, 1]],
+            'bigTooLong' => [$this->getBlankLine(10), [3, 3, 3]],
+        ];
+    }
+
+    public function getLineFromString($string)
+    {
+        return str_split($string);
+    }
+}
