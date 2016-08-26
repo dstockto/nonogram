@@ -1,4 +1,5 @@
 <?php
+namespace FitFinder;
 
 class FitFinder
 {
@@ -23,13 +24,16 @@ class FitFinder
         // Detect clue that is too long for line
         $clueLength = $this->getClueLength($clue);
         if ($clueLength > count($line)) {
-            throw new InvalidArgumentException('Clue has too much to fit in line');
+            throw new \InvalidArgumentException('Clue has too much to fit in line');
         }
 
         // Detect clue with a 0 that's not by itself
         if (count($clue) > 1 && array_search(0, $clue) !== false) {
-            throw new InvalidArgumentException('Clue contains embedded zero');
+            throw new \InvalidArgumentException('Clue contains embedded zero');
         }
+
+        // Detect lines that don't have room for a clue i.e. - 1 ###
+        $this->detectOverfill($line, $clue);
     }
 
     /**
@@ -114,6 +118,11 @@ class FitFinder
         // check if pattern cannot match because matched pattern too big
 
         // check if pattern cannot match because too many "clues" already matched
+
+    }
+
+    private function detectOverfill($line, $clue)
+    {
 
     }
 }

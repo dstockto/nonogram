@@ -1,12 +1,18 @@
 {
     "name": "dstockton/bestfit",
     "require": {
-        "phpunit/phpunit": "^5.5"
+        "phpunit/phpunit": "^5.5",
+        "illuminate/support": "^5.3"
     },
     "authors": [
         {
             "name": "David Stockton",
             "email": "dave@davidstockton.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "FitFinder\\": "src/FitFinder"
+        }
+    }
 }

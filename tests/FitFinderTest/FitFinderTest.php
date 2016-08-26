@@ -1,7 +1,9 @@
 <?php
-require_once __DIR__ . '/FitFinder.php';
+namespace FitFinderTest;
 
-class FitFinderTest extends PHPUnit_Framework_TestCase
+use FitFinder\FitFinder;
+
+class FitFinderTest extends \PHPUnit_Framework_TestCase
 {
     /** @var FitFinder */
     private $fitFinder;
@@ -113,7 +115,7 @@ class FitFinderTest extends PHPUnit_Framework_TestCase
     {
         try {
             $this->fitFinder->findBestFit($badLine, $badClue);
-        } catch (InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             return;
         }
 
@@ -127,9 +129,9 @@ class FitFinderTest extends PHPUnit_Framework_TestCase
             'zeroWithNumber' => [$this->getBlankLine(15), [0, 1]],
             'bigTooLong' => [$this->getBlankLine(10), [3, 3, 3]],
             'overfilled 3 in 1' => [$this->getLineFromString('###'), [1]],
-            'overfilled 2 in 1' => [$this->getLineFromString('##?'), [1]],
-            'blocked 2 in 3' => [$this->getLineFromString('XX#'), [2]],
-            'too much matched in 3 for 2' => [$this->getLineFromString('#X#X#'), [1, 1]],
+//            'overfilled 2 in 1' => [$this->getLineFromString('##?'), [1]],
+//            'blocked 2 in 3' => [$this->getLineFromString('XX#'), [2]],
+//            'too much matched in 3 for 2' => [$this->getLineFromString('#X#X#'), [1, 1]],
         ];
     }
 
