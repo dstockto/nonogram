@@ -21,19 +21,12 @@ class FitFinder
 
     public function validateLine(array $line, array $clue)
     {
-        // Detect clue that is too long for line
-        $clueLength = $this->getClueLength($clue);
-        if ($clueLength > count($line)) {
-            throw new \InvalidArgumentException('Clue has too much to fit in line');
-        }
-
         // Detect clue with a 0 that's not by itself
         if (count($clue) > 1 && array_search(0, $clue) !== false) {
             throw new \InvalidArgumentException('Clue contains embedded zero');
         }
 
-        // Detect lines that don't have room for a clue i.e. - 1 ###
-        $this->detectOverfill($line, $clue);
+        $this->detectImpossibleLine($line, $clue);
     }
 
     /**
@@ -108,51 +101,19 @@ class FitFinder
 
     private function solvePartial($line, $clue)
     {
-        $this->validateImpossible($line, $clue);
-
         return $line;
     }
 
-    private function validateImpossible($line, $clue)
+    private function detectImpossibleLine(array $line, array $clue)
     {
-        // check if pattern cannot match because matched pattern too big
+        // build line regex, see if it could work
+        $matchRegex = collect($clue)
+            ->map(function ($number) {
+                return sprintf('[%s%s]{%s}', self::FILLED, self::UNKNOWN, $number);
+            })->implode(sprintf('[%s%s]+', self::EMPTY, self::UNKNOWN));
 
-        // check if pattern cannot match because too many "clues" already matched
-
-    }
-
-    /**
-     * Determine if a given line doesn't have enough space to accommodate the clue
-     *
-     * @param array $line
-     * @param array $clue
-     *
-     * @throws \InvalidArgumentException
-     */
-    private function detectOverfill($line, $clue)
-    {
-        $largestClue = max($clue);
-        if ($largestClue == 0) {
-            return;
-        }
-
-        $openSpace = FitFinder::UNKNOWN . FitFinder::FILLED;
-
-        $pattern = '[%s]{%d}';
-        $largestClueMatch = sprintf("/$pattern/", $openSpace, $largestClue);
-
-        if (preg_match($largestClueMatch, join('', $line)) === 0) {
-            throw new \InvalidArgumentException('Detected overfill situation - cannot fit clue into remaining spaces');
-        }
-
-        // Check for bogusly filled line
-        $blanks = '[' . self::EMPTY . self::UNKNOWN . ']+';
-        $cluePattern = collect($clue)->map(function($fillCount) use ($pattern, $openSpace) {
-            return sprintf($pattern, $openSpace, $fillCount);
-        })->implode($blanks);
-
-        if (preg_match("/$cluePattern/", join('', $line)) == 0) {
-            throw new \InvalidArgumentException('Line cannot hold clue');
+        if (preg_match("/$matchRegex/", join('', $line)) == 0) {
+            throw new \InvalidArgumentException('Clue cannot work on given line');
         }
     }
 }
