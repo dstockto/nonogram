@@ -57,14 +57,6 @@ class FitFinder
             return array_fill(0, count($line), self::EMPTY);
         }
 
-        // If there's one clue and the line length - clue number > 1/2 line length, the difference is on both sides
-        if (count($clue) == 1 && $clue[0] > (count($line) / 2)) {
-            $gap = count($line) - $clue[0];
-            $gapLine = array_fill(0, $gap, FitFinder::UNKNOWN);
-            $fillLine = array_fill(0, count($line) - 2 * $gap, FitFinder::FILLED);
-            return array_merge($gapLine, $fillLine, $gapLine);
-        }
-
         // If the clue fits all the spaces, do it
         if ($this->getClueLength($clue) == count($line)) {
             $result = [];
