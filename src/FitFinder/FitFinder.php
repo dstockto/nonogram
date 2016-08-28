@@ -16,7 +16,11 @@ class FitFinder
             return $this->solveUnsolved($line, $clue);
         }
 
-        return $this->solvePartial($line, $clue);
+        $partialSolved = $this->solvePartial($line, $clue);
+        // Logic from above should work backwards too
+        $reverseSolved = $this->solvePartial(array_reverse($partialSolved), array_reverse($clue));
+
+        return array_reverse($reverseSolved);
     }
 
     public function validateLine(array $line, array $clue)
