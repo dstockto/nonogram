@@ -16,11 +16,14 @@ class FitFinder
             return $this->solveUnsolved($line, $clue);
         }
 
-        $partialSolved = $this->solvePartial($line, $clue);
-        // Logic from above should work backwards too
-        $reverseSolved = $this->solvePartial(array_reverse($partialSolved), array_reverse($clue));
+        $line = $this->edgeExpansion($line, $clue);
 
-        return array_reverse($reverseSolved);
+        $lineClue = $this->calculateLineClue($line);
+        if ($lineClue == $clue) {
+            $line = str_split(str_replace(self::UNKNOWN, self::EMPTY, join('', $line)));
+        }
+
+        return $line;
     }
 
     public function validateLine(array $line, array $clue)
@@ -141,5 +144,34 @@ class FitFinder
         if ($hasMatch === 0) {
             throw new \InvalidArgumentException('Clue cannot work on given line: ' . $matchRegex . ' - ' . join('', $line) . ' - [' . join(' ', $clue) . ']');
         }
+    }
+
+    /**
+     * @param array $line
+     * @param array $clue
+     * @return array
+     */
+    public function edgeExpansion(array $line, array $clue) : array
+    {
+        $partialSolved = $this->solvePartial($line, $clue);
+        // Logic from above should work backwards too
+        $reverseSolved = $this->solvePartial(array_reverse($partialSolved), array_reverse($clue));
+        return array_reverse($reverseSolved);
+    }
+
+    /**
+     * Figure out what the current clue for the line is as it is filled out
+     *
+     * @param array $line
+     * @return array
+     */
+    private function calculateLineClue(array $line) : array
+    {
+        $pattern = sprintf('/%s+/', self::FILLED);
+        preg_match_all($pattern, join('', $line), $matches);
+        $clue = collect($matches[0])->map(function ($clueMatch) {
+            return strlen($clueMatch);
+        });
+        return $clue->all();
     }
 }
