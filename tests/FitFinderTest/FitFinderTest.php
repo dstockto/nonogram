@@ -94,6 +94,12 @@ class FitFinderTest extends \PHPUnit_Framework_TestCase
             'edge expand' => [
                 $this->getLineFromString('X??'), [2], $this->getLineFromString('XX.'),
             ],
+            'edge 1 mark empty' => [
+                $this->getLineFromString('X??'), [1], $this->getLineFromString('X.?'),
+            ],
+            'edge marked, clue to end of line' => [
+                $this->getLineFromString('X??'), [3], $this->getLineFromString('XXX'),
+            ],
 //            'PS 1 1 in 3' => [
 //                $this->getLineFromString('??#'), [1, 1], $this->getLineFromString('#X#'),
 //            ],

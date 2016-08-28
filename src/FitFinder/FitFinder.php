@@ -112,7 +112,7 @@ class FitFinder
                 $line[$index] = self::FILLED;
                 $index++;
                 $clueSize--;
-                if ($clueSize == 0) {
+                if ($clueSize == 0 && $index < count($line)) {
                     $line[$index] = self::EMPTY;
                     break;
                 }
