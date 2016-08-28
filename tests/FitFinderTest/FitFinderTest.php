@@ -14,6 +14,39 @@ class FitFinderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param $badLine
+     * @param $badClue
+     * @dataProvider invalidLineProvider
+     * @test
+     */
+    public function it_will_throw_an_exception_for_a_bad_line($badLine, $badClue)
+    {
+        try {
+            $this->fitFinder->findBestFit($badLine, $badClue);
+        } catch (\InvalidArgumentException $e) {
+            return;
+        }
+
+        $this->fail('Invalid line/clue not detected');
+    }
+
+    public function invalidLineProvider()
+    {
+        return [
+            'tooLong' => [$this->getBlankLine(1), [2]],
+            'zeroWithNumber' => [$this->getBlankLine(15), [0, 1]],
+            'bigTooLong' => [$this->getBlankLine(10), [3, 3, 3]],
+            'bad blanks 3 in 1' => [$this->getLineFromString('...'), [1]],
+            'bad blanks 2 in 3' => [$this->getLineFromString('.?.'), [2]],
+            'overfilled 3 in 1' => [$this->getLineFromString('XXX'), [1]],
+            'too much matched in 3 for 2' => [$this->getLineFromString('#X#X#'), [1, 1]],
+            'overfilled 2 in 1' => [$this->getLineFromString('XX?'), [1]],
+            'overfilled 2 in 1 alt' => [$this->getLineFromString('?XX'), [1]],
+            'blocked 2 in 3' => [$this->getLineFromString('..X'), [2]],
+        ];
+    }
+
+    /**
      * @param $line
      * @param $clue
      * @param $expectedLine
@@ -106,14 +139,14 @@ class FitFinderTest extends \PHPUnit_Framework_TestCase
             'right edge marked, expand left' => [
                 $this->getLineFromString('??X'), [1], $this->getLineFromString('..X'),
             ],
+            'PS 2 in 3' => [
+                $this->getLineFromString('.X?'), [2], $this->getLineFromString('.XX'),
+            ],
 //            'PS 1 1 in 3' => [
 //                $this->getLineFromString('??X'), [1, 1], $this->getLineFromString('X.X'),
 //            ],
 //            'PS 1 1 in 3 alt' => [
 //                $this->getLineFromString('X??'), [1, 1], $this->getLineFromString('X.X'),
-//            ],
-//            'PS 2 in 3' => [
-//                $this->getLineFromString('X#?'), [2], $this->getLineFromString('X##'),
 //            ],
         ];
     }
@@ -123,38 +156,7 @@ class FitFinderTest extends \PHPUnit_Framework_TestCase
         return array_fill(0, $size, FitFinder::UNKNOWN);
     }
 
-    /**
-     * @param $badLine
-     * @param $badClue
-     * @dataProvider invalidLineProvider
-     * @test
-     */
-    public function it_will_throw_an_exception_for_a_bad_line($badLine, $badClue)
-    {
-        try {
-            $this->fitFinder->findBestFit($badLine, $badClue);
-        } catch (\InvalidArgumentException $e) {
-            return;
-        }
 
-        $this->fail('Invalid line/clue not detected');
-    }
-
-    public function invalidLineProvider()
-    {
-        return [
-            'tooLong' => [$this->getBlankLine(1), [2]],
-            'zeroWithNumber' => [$this->getBlankLine(15), [0, 1]],
-            'bigTooLong' => [$this->getBlankLine(10), [3, 3, 3]],
-            'bad blanks 3 in 1' => [$this->getLineFromString('...'), [1]],
-            'bad blanks 2 in 3' => [$this->getLineFromString('.?.'), [2]],
-            'overfilled 3 in 1' => [$this->getLineFromString('XXX'), [1]],
-            'too much matched in 3 for 2' => [$this->getLineFromString('#X#X#'), [1, 1]],
-            'overfilled 2 in 1' => [$this->getLineFromString('XX?'), [1]],
-            'overfilled 2 in 1 alt' => [$this->getLineFromString('?XX'), [1]],
-            'blocked 2 in 3' => [$this->getLineFromString('..X'), [2]],
-        ];
-    }
 
     public function getLineFromString($string)
     {

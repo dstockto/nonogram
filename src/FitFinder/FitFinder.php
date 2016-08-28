@@ -109,8 +109,12 @@ class FitFinder
     private function solvePartial($line, $clue)
     {
         // Look for filled spot next to the edge, fill in
-        if ($line[0] == self::FILLED) {
-            $index = 0;
+        // Empty strings next to an edge are the same as an edge - i.e., ..X??
+        $index = 0;
+        while ($line[$index] == self::EMPTY) {
+            $index++;
+        }
+        if ($line[$index] == self::FILLED) {
             $clueSize = $clue[0];
             while ($index < count($line)) {
                 if (!in_array($line[$index], [self::FILLED, self::UNKNOWN])) {
