@@ -112,7 +112,7 @@ class FitFinder
                 if ($number == 0) {
                     return sprintf('[%s%s]+', self::UNKNOWN, self::EMPTY);
                 }
-                return sprintf('[%s%s]{%s}', self::FILLED, self::UNKNOWN, $number);
+                return sprintf('(?<!%s)[%s%s]{%d}(?!%s)', self::FILLED, self::FILLED, self::UNKNOWN, $number, self::FILLED);
             })->implode(sprintf('[%s%s]+', self::EMPTY, self::UNKNOWN));
 
         $hasMatch = preg_match("/$matchRegex/", join('', $line));
