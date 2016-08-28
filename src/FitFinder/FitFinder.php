@@ -3,8 +3,8 @@ namespace FitFinder;
 
 class FitFinder
 {
-    const EMPTY = 'X';
-    const FILLED = '#';
+    const EMPTY = '.';
+    const FILLED = 'X';
     const UNKNOWN = '?';
 
     public function findBestFit(array $line, array $clue)
@@ -121,8 +121,38 @@ class FitFinder
 
     }
 
+    /**
+     * Determine if a given line doesn't have enough space to accommodate the clue
+     *
+     * @param array $line
+     * @param array $clue
+     *
+     * @throws \InvalidArgumentException
+     */
     private function detectOverfill($line, $clue)
     {
+        $largestClue = max($clue);
+        if ($largestClue == 0) {
+            return;
+        }
 
+        $openSpace = FitFinder::UNKNOWN . FitFinder::FILLED;
+
+        $pattern = '[%s]{%d}';
+        $largestClueMatch = sprintf("/$pattern/", $openSpace, $largestClue);
+
+        if (preg_match($largestClueMatch, join('', $line)) === 0) {
+            throw new \InvalidArgumentException('Detected overfill situation - cannot fit clue into remaining spaces');
+        }
+
+        // Check for bogusly filled line
+        $blanks = '[' . self::EMPTY . self::UNKNOWN . ']+';
+        $cluePattern = collect($clue)->map(function($fillCount) use ($pattern, $openSpace) {
+            return sprintf($pattern, $openSpace, $fillCount);
+        })->implode($blanks);
+
+        if (preg_match("/$cluePattern/", join('', $line)) == 0) {
+            throw new \InvalidArgumentException('Line cannot hold clue');
+        }
     }
 }

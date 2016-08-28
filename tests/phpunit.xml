@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+    <testsuites>
+        <testsuite name="BestFit Test">
+            <directory>./FitFinderTest</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhiteList="true">
+            <directory>../src</directory>
+        </whitelist>
+        <blacklist>
+            <directory>../../../vendor</directory>
+        </blacklist>
+    </filter>
+</phpunit>
