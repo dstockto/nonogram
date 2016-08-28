@@ -57,11 +57,6 @@ class FitFinder
             return array_fill(0, count($line), self::EMPTY);
         }
 
-        // If the clue has one value and it's the same as the line, fill it all
-        if (count($clue) == 1 && $clue[0] == count($line)) {
-            return array_fill(0, count($line), self::FILLED);
-        }
-
         // If there's one clue and the line length - clue number > 1/2 line length, the difference is on both sides
         if (count($clue) == 1 && $clue[0] > (count($line) / 2)) {
             $gap = count($line) - $clue[0];
