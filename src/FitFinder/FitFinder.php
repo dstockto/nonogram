@@ -109,11 +109,15 @@ class FitFinder
         // build line regex, see if it could work
         $matchRegex = collect($clue)
             ->map(function ($number) {
+                if ($number == 0) {
+                    return sprintf('[%s%s]+', self::UNKNOWN, self::EMPTY);
+                }
                 return sprintf('[%s%s]{%s}', self::FILLED, self::UNKNOWN, $number);
             })->implode(sprintf('[%s%s]+', self::EMPTY, self::UNKNOWN));
 
-        if (preg_match("/$matchRegex/", join('', $line)) == 0) {
-            throw new \InvalidArgumentException('Clue cannot work on given line');
+        $hasMatch = preg_match("/$matchRegex/", join('', $line));
+        if ($hasMatch === 0) {
+            throw new \InvalidArgumentException('Clue cannot work on given line: ' . $matchRegex . ' - ' . join('', $line) . ' - [' . join(' ', $clue) . ']');
         }
     }
 }
