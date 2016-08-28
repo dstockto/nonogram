@@ -101,6 +101,24 @@ class FitFinder
 
     private function solvePartial($line, $clue)
     {
+        // Look for filled spot next to the edge, fill in
+        if ($line[0] == self::FILLED) {
+            $index = 0;
+            $clueSize = $clue[0];
+            while ($index < count($line)) {
+                if (!in_array($line[$index], [self::FILLED, self::UNKNOWN])) {
+                    throw new \RuntimeException('Trying to fill something that cannot be filled.');
+                }
+                $line[$index] = self::FILLED;
+                $index++;
+                $clueSize--;
+                if ($clueSize == 0) {
+                    $line[$index] = self::EMPTY;
+                    break;
+                }
+            }
+        }
+
         return $line;
     }
 

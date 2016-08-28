@@ -91,9 +91,9 @@ class FitFinderTest extends \PHPUnit_Framework_TestCase
                 $this->getBlankLine(10), [1, 5, 1], $this->getLineFromString('???XXXX???'),
             ],
             // Puzzles that have some parts solved
-//            '2 expand' => [
-//                $this->getLineFromString('.X?'), [2], $this->getLineFromString('.XX'),
-//            ]
+            'edge expand' => [
+                $this->getLineFromString('X??'), [2], $this->getLineFromString('XX.'),
+            ],
 //            'PS 1 1 in 3' => [
 //                $this->getLineFromString('??#'), [1, 1], $this->getLineFromString('#X#'),
 //            ],
