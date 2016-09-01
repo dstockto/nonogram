@@ -142,8 +142,17 @@ class FitFinderTest extends \PHPUnit_Framework_TestCase
             'PS 2 in 3' => [
                 $this->getLineFromString('.X?'), [2], $this->getLineFromString('.XX'),
             ],
-//            'PS 1 1 in 3' => [
-//                $this->getLineFromString('??X'), [1, 1], $this->getLineFromString('X.X'),
+            'Expand filled to blocked' => [
+                $this->getLineFromString('X??'), [1, 1], $this->getLineFromString('X.?'),
+            ],
+            'Fill single option 1' => [
+                $this->getLineFromString('??X'), [1, 1], $this->getLineFromString('X.X'),
+            ],
+//            'Fill single option 2' => [
+//                $this->getLineFromString('.?.'), [1], $this->getLineFromString('.X.'),
+//            ],
+//            'Fill single option 3' => [
+//                $this->getLineFromString('???.'), [3], $this->getLineFromString('XXX.'),
 //            ],
 //            'PS 1 1 in 3 alt' => [
 //                $this->getLineFromString('X??'), [1, 1], $this->getLineFromString('X.X'),
