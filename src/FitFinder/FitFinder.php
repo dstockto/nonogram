@@ -7,7 +7,7 @@ class FitFinder
     const FILLED = 'X';
     const UNKNOWN = '?';
 
-    public function findBestFit(array $line, array $clue)
+    public function findBestFit(array $line, array $clue): array
     {
         $this->validateLine($line, $clue);
 

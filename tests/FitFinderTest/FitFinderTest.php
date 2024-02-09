@@ -2,13 +2,13 @@
 namespace FitFinderTest;
 
 use FitFinder\FitFinder;
+use PHPUnit\Framework\TestCase;
 
-class FitFinderTest extends \PHPUnit_Framework_TestCase
+class FitFinderTest extends TestCase
 {
-    /** @var FitFinder */
-    private $fitFinder;
+    private FitFinder $fitFinder;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->fitFinder = new FitFinder();
     }
@@ -22,15 +22,16 @@ class FitFinderTest extends \PHPUnit_Framework_TestCase
     public function it_will_throw_an_exception_for_a_bad_line($badLine, $badClue)
     {
         try {
-            $this->fitFinder->findBestFit($badLine, $badClue);
+            $return = $this->fitFinder->findBestFit($badLine, $badClue);
         } catch (\InvalidArgumentException $e) {
+            $this->assertInstanceOf(\InvalidArgumentException::class, $e);
             return;
         }
-
+        $this->assertNull($return);
         $this->fail('Invalid line/clue not detected');
     }
 
-    public function invalidLineProvider()
+    public function invalidLineProvider(): array
     {
         return [
             'tooLong' => [$this->getBlankLine(1), [2]],
@@ -59,7 +60,7 @@ class FitFinderTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function lineProvider()
+    public function lineProvider(): array
     {
         return [
             // Puzzles that don't need any information
