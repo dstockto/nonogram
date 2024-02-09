@@ -1,9 +1,9 @@
 {
     "name": "dstockton/bestfit",
     "require": {
-        "phpunit/phpunit": "^5.5",
-        "illuminate/support": "^5.3",
-        "squizlabs/php_codesniffer": "^2.3.1"
+        "phpunit/phpunit": "^9.5.25",
+        "illuminate/support": "^v9.52.13",
+        "squizlabs/php_codesniffer": "^3.7.2"
     },
     "authors": [
         {
